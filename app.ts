@@ -51,6 +51,8 @@ app.listen(port, () => {
 	);
 });
 
-// import { battleLogRouter } from "./routes/analysis.route";
-//
-// app.use("/", battleLogRouter);
+import { playerInfo } from "./routes/player.info.route";
+import { analysis } from "./routes/analysis.route";
+
+app.use("/bsanalysis/api/v1/", playerInfo);
+app.use("/bsanalysis/api/v1/", analysis);

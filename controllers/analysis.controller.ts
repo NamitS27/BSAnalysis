@@ -122,37 +122,39 @@ async function battleLogAnalysis(
 			const battleDetails = battle["battle"];
 			const eventMap = event["map"];
 			const eventMode = battleDetails["mode"];
-			const trophyChange = battleDetails["trophyChange"];
+			const trophyChange = battleDetails["trophyChange"] || 0;
 			const result = battleDetails["result"];
-			const duration = battleDetails["duration"];
+			const duration = battleDetails["duration"] || 0;
 			const starPlayer = battleDetails["starPlayer"];
 
-			if (battleDetails["teams"].length === 2) {
-				const team1 = battleDetails["teams"][0];
-				const team2 = battleDetails["teams"][1];
+			if (battleDetails["teams"]) {
+				if (battleDetails["teams"].length === 2) {
+					const team1 = battleDetails["teams"][0];
+					const team2 = battleDetails["teams"][1];
 
-				const parsedTeams = parseTeams(team1, team2, tag);
-				// console.log(parsedTeams);
+					const parsedTeams = parseTeams(team1, team2, tag);
+					// console.log(parsedTeams);
 
-				await updateTeamBrawlerAnalysis(
-					tag,
-					eventMap,
-					eventMode,
-					parsedTeams["brawler"],
-					duration,
-					result,
-					trophyChange,
-					starPlayer["tag"]
-				);
-				if (parsedTeams["trio"] == "Yes" && tag == "#2LJYR2UU") {
-					await updateTeamAnalysis(
+					await updateTeamBrawlerAnalysis(
+						tag,
 						eventMap,
 						eventMode,
-						parsedTeams["finalTeam"],
+						parsedTeams["brawler"],
 						duration,
 						result,
-						trophyChange
+						trophyChange,
+						starPlayer["tag"]
 					);
+					if (parsedTeams["trio"] == "Yes" && tag == "#2LJYR2UU") {
+						await updateTeamAnalysis(
+							eventMap,
+							eventMode,
+							parsedTeams["finalTeam"],
+							duration,
+							result,
+							trophyChange
+						);
+					}
 				}
 			}
 		}
