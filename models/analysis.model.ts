@@ -17,7 +17,6 @@ interface teamAnalysisModel extends Document {
 	map: string;
 	victory: number;
 	defeat: number;
-	trophyChange: number;
 	meanDuration: number;
 	team: [string];
 }
@@ -44,7 +43,6 @@ const teamAnalysisSchema = new Schema(
 		victory: { type: Number, required: true, default: 0 },
 		defeat: { type: Number, required: true, default: 0 },
 		meanDuration: { type: Number, required: true, default: 0 },
-		tropyChange: { type: Number, required: true, default: 0 },
 		team: { type: [String], required: true },
 	},
 	{ versionKey: false }

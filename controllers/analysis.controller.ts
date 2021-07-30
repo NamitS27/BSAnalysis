@@ -122,9 +122,9 @@ async function battleLogAnalysis(
 			const battleDetails = battle["battle"];
 			const eventMap = event["map"];
 			const eventMode = battleDetails["mode"];
-			const trophyChange = battleDetails["trophyChange"] || 0;
+			const trophyChange = battleDetails["trophyChange"];
 			const result = battleDetails["result"];
-			const duration = battleDetails["duration"] || 0;
+			const duration = battleDetails["duration"];
 			const starPlayer = battleDetails["starPlayer"];
 
 			if (battleDetails["teams"]) {
@@ -151,8 +151,7 @@ async function battleLogAnalysis(
 							eventMode,
 							parsedTeams["finalTeam"],
 							duration,
-							result,
-							trophyChange
+							result
 						);
 					}
 				}
@@ -213,8 +212,7 @@ async function updateTeamAnalysis(
 	mode: any,
 	team: [string],
 	duration: number,
-	result: string,
-	trophyChange: number
+	result: string
 ) {
 	try {
 		const currTeamAnalysis = await TeamAnalysis.findOne({
@@ -225,20 +223,24 @@ async function updateTeamAnalysis(
 		if (currTeamAnalysis) {
 			currTeamAnalysis.meanDuration =
 				(currTeamAnalysis.meanDuration + duration) / 2;
-			currTeamAnalysis.victory += result == "victory" ? 1 : 0;
-			currTeamAnalysis.defeat += result == "defeat" ? 1 : 0;
-			currTeamAnalysis.trophyChange =
-				(currTeamAnalysis.trophyChange + trophyChange) / 2;
+			if (result == "defeat") {
+				currTeamAnalysis.defeat += 1;
+			} else {
+				currTeamAnalysis.victory += 1;
+			}
 		} else {
 			if (map == null) map = "mapMaker";
+			let vic: number = 0,
+				def: number = 0;
+			if (result == "defeat") def++;
+			else vic++;
 			const newData = new TeamAnalysis({
 				map: map,
 				mode: mode,
 				team: team,
 				meanDuration: duration,
-				victory: result == "victory" ? 1 : 0,
-				defeat: result == "defeat" ? 1 : 0,
-				trophyChange: trophyChange,
+				victory: vic,
+				defeat: def,
 			});
 			await newData.save();
 		}
@@ -267,22 +269,29 @@ async function updateTeamBrawlerAnalysis(
 	if (currTeamBrawlerAnalysis) {
 		currTeamBrawlerAnalysis.meanDuration =
 			(currTeamBrawlerAnalysis.meanDuration + duration) / 2;
-		currTeamBrawlerAnalysis.victory += result == "victory" ? 1 : 0;
-		currTeamBrawlerAnalysis.defeat += result == "defeat" ? 1 : 0;
+		if (result == "defeat") {
+			currTeamBrawlerAnalysis.defeat += 1;
+		} else {
+			currTeamBrawlerAnalysis.victory += 1;
+		}
 		currTeamBrawlerAnalysis.trophyChange =
 			(currTeamBrawlerAnalysis.trophyChange + trophyChange) / 2;
 		currTeamBrawlerAnalysis.starPlayer += starPlayerTag === tag ? 1 : 0;
 		await currTeamBrawlerAnalysis.save();
 	} else {
 		if (map == null) map = "mapMaker";
+		let vic: number = 0,
+			def: number = 0;
+		if (result == "defeat") def++;
+		else vic++;
 		const newData = new TeamBrawlerAnalysis({
 			tag: tag,
 			map: map,
 			mode: mode,
 			brawlerName: brawlerName,
 			meanDuration: duration,
-			victory: result == "victory" ? 1 : 0,
-			defeat: result == "defeat" ? 1 : 0,
+			victory: vic,
+			defeat: def,
 			trophyChange: trophyChange,
 			starPlayer: starPlayerTag === tag ? 1 : 0,
 		});
