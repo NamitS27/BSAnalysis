@@ -29,7 +29,7 @@ const teamBrawlerAnalysisSchema = new Schema(
 		brawlerName: { type: String, required: true },
 		victory: { type: Number, required: true, default: 0 },
 		defeat: { type: Number, required: true, default: 0 },
-		trophyChange: { type: Number, required: true, default: 0 },
+		trophyChange: { type: Number, required: true },
 		meanDuration: { type: Number, required: true, default: 0 },
 		starPlayer: { type: Number, required: true, default: 0 },
 	},

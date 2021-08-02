@@ -83,11 +83,27 @@ export async function brawlBrosStats(req: Request, res: Response) {
 	try {
 		const query = [
 			{
-				$group: {
-					_id: "$mode",
-					victory: { $sum: "$victory" },
-					defeat: { $sum: "$defeat" },
-					meanDuration: { $avg: "$meanDuration" },
+				$facet: {
+					modewise: [
+						{
+							$group: {
+								_id: "$mode",
+								victory: { $sum: "$victory" },
+								defeat: { $sum: "$defeat" },
+								meanDuration: { $avg: "$meanDuration" },
+							},
+						},
+					],
+					overall: [
+						{
+							$group: {
+								_id: null,
+								victory: { $sum: "$victory" },
+								defeat: { $sum: "$defeat" },
+								meanDuration: { $avg: "$meanDuration" },
+							},
+						},
+					],
 				},
 			},
 		];

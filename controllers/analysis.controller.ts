@@ -122,9 +122,9 @@ async function battleLogAnalysis(
 			const battleDetails = battle["battle"];
 			const eventMap = event["map"];
 			const eventMode = battleDetails["mode"];
-			const trophyChange = battleDetails["trophyChange"];
+			const trophyChange = battleDetails["trophyChange"] || 0;
 			const result = battleDetails["result"];
-			const duration = battleDetails["duration"];
+			const duration = battleDetails["duration"] || 0;
 			const starPlayer = battleDetails["starPlayer"];
 
 			if (battleDetails["teams"]) {
@@ -133,7 +133,8 @@ async function battleLogAnalysis(
 					const team2 = battleDetails["teams"][1];
 
 					const parsedTeams = parseTeams(team1, team2, tag);
-					// console.log(parsedTeams);
+					let starPlayerTag: string = "";
+					if (starPlayer) starPlayerTag = starPlayer["tag"];
 
 					await updateTeamBrawlerAnalysis(
 						tag,
@@ -143,7 +144,7 @@ async function battleLogAnalysis(
 						duration,
 						result,
 						trophyChange,
-						starPlayer["tag"]
+						starPlayerTag
 					);
 					if (parsedTeams["trio"] == "Yes" && tag == "#2LJYR2UU") {
 						await updateTeamAnalysis(
@@ -228,6 +229,7 @@ async function updateTeamAnalysis(
 			} else {
 				currTeamAnalysis.victory += 1;
 			}
+			await currTeamAnalysis.save();
 		} else {
 			if (map == null) map = "mapMaker";
 			let vic: number = 0,
