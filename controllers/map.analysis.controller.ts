@@ -34,30 +34,41 @@ export async function individualStats(req: Request, res: Response) {
 
 		const query = [
 			{
-				$match: {
-					tag: tags[person],
-				},
-			},
-			{
-				$group: {
-					_id: "$mode",
-					victory: { $sum: "$victory" },
-					defeat: { $sum: "$defeat" },
-					trophyChange: { $sum: "$trophyChange" },
-					meanDuration: { $avg: "$meanDuration" },
-					starPlayer: { $sum: "$starPlayer" },
-				},
-			},
-			{
-				$group: {
-					_id: "$tag",
-					victory: { $sum: "$victory" },
-					defeat: { $sum: "$defeat" },
-					trophyChange: { $sum: "$trophyChange" },
-					starPlayer: { $sum: "$starPlayer" },
+				$facet: {
+					modewise: [
+						{
+							$match: { tag: tags[person] },
+						},
+						{
+							$group: {
+								_id: "$mode",
+								victory: { $sum: "$victory" },
+								defeat: { $sum: "$defeat" },
+								trophyChange: { $sum: "$trophyChange" },
+								meanDuration: { $avg: "$meanDuration" },
+								starPlayer: { $sum: "$starPlayer" },
+							},
+						},
+					],
+					overall: [
+						{
+							$match: { tag: tags[person] },
+						},
+						{
+							$group: {
+								_id: "$tag",
+								victory: { $sum: "$victory" },
+								defeat: { $sum: "$defeat" },
+								trophyChange: { $sum: "$trophyChange" },
+								meanDuration: { $avg: "$meanDuration" },
+								starPlayer: { $sum: "$starPlayer" },
+							},
+						},
+					],
 				},
 			},
 		];
+
 		const stats = await TeamBrawlerAnalysis.aggregate(query);
 		res.status(200).json(stats);
 	} catch (err) {
