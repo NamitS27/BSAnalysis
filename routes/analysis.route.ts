@@ -1,15 +1,15 @@
 import express from "express";
 import {
-	insights,
-	individualStats,
-	brawlBrosStats,
-	brawlBrosInsights,
+	insightsController,
+	individualStatsController,
+	brawlBrosStatsController,
+	brawlBrosInsightsController,
 } from "../controllers/map.analysis.controller";
 const router = express.Router();
 
-router.get("/insights", insights);
-router.get("/stats/:person", individualStats);
-router.get("/brawl/bro/insights", brawlBrosInsights);
-router.get("/brawl/bro/stats", brawlBrosStats);
+router.get("/insights", insightsController);
+router.get("/stats/:person", individualStatsController);
+router.get("/brawl/bro/insights", brawlBrosInsightsController);
+router.get("/brawl/bro/stats", brawlBrosStatsController);
 
 export const analysis = router;

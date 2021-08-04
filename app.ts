@@ -5,6 +5,8 @@ import morgan from "morgan";
 import bodyParser from "body-parser";
 import mongoose from "mongoose";
 import cron from "node-cron";
+import { Bot } from "./discord_bot/client/client";
+import { logger } from "./logger";
 
 // initialize configuration
 dotenv.config();
@@ -21,9 +23,9 @@ mongoose.connect(
 	},
 	(err) => {
 		if (err) {
-			console.log(err);
+			logger.error(err);
 		} else {
-			console.log("Connected to BS Analysis Database!");
+			logger.success("Connected to BS Analysis Database!");
 		}
 	}
 );
@@ -31,7 +33,7 @@ mongoose.connect(
 const port = process.env.SERVER_PORT;
 const app = express();
 
-import { doTheNeedful } from "./controllers/analysis.controller";
+import { doTheNeedful } from "./utils/analysis";
 
 cron.schedule("*/10 * * * *", doTheNeedful);
 
@@ -46,10 +48,10 @@ app.use(bodyParser.json());
 
 app.listen(port, () => {
 	const currDate = new Date();
-	console.log(
-		`Application is running on port ${port} start @ ${currDate.toLocaleTimeString()}.`
-	);
+	logger.info(`Application is running on port ${port}.`);
 });
+
+new Bot().start();
 
 import { playerInfo } from "./routes/player.info.route";
 import { analysis } from "./routes/analysis.route";
