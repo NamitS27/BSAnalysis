@@ -8,7 +8,7 @@ export interface Run {
 
 export interface Command {
 	name: string;
-	description: string;
+	description?: string;
 	aliases?: string[];
 	run: Run;
 }

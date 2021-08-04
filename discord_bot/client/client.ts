@@ -16,9 +16,11 @@ import { Event } from "../interfaces/event";
 const globPromise = promisify(glob);
 
 class Bot extends Client {
+	public prefix: string = "#";
 	public logger: Consola = consola;
 	public commands: Collection<string, Command> = new Collection();
 	public aliases: Collection<string, string> = new Collection();
+	public descriptions: Collection<string, string> = new Collection();
 	public events: Collection<string, Event> = new Collection();
 
 	public constructor() {
@@ -45,6 +47,9 @@ class Bot extends Client {
 					this.aliases.set(alias, file.name)
 				);
 			}
+			if (file.description?.length) {
+				this.descriptions.set(file.name, file.description);
+			}
 		});
 
 		const eventFiles = await globPromise(
@@ -57,17 +62,11 @@ class Bot extends Client {
 		});
 	}
 
-	public embed(options: MessageEmbedOptions, message: Message): MessageEmbed {
+	public embed(options: MessageEmbedOptions): MessageEmbed {
 		return new MessageEmbed({
 			...options,
 			color: "RANDOM",
-		}).setFooter(
-			`${message.author.tag} | ${this.user.username}`,
-			message.author.displayAvatarURL({
-				format: "png",
-				dynamic: true,
-			})
-		);
+		});
 	}
 }
 
