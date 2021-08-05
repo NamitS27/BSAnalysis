@@ -24,7 +24,7 @@ export const run: Run = async (client, message) => {
 			inline: true,
 		},
 		{
-			name: "Total Trophy Change",
+			name: "Average Trophy Change",
 			value: `${Math.floor(stats["trophyChange"])}`,
 		},
 		{

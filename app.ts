@@ -11,8 +11,7 @@ import { logger } from "./logger";
 // initialize configuration
 dotenv.config();
 
-const uri =
-	"mongodb+srv://namit27:bsanalysis@bs-analysis.lvb01.mongodb.net/brawlanalysis?retryWrites=true&w=majority";
+const uri = process.env.MONGODB_URI;
 mongoose.connect(
 	uri,
 	{
@@ -47,7 +46,6 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 app.listen(port, () => {
-	const currDate = new Date();
 	logger.info(`Application is running on port ${port}.`);
 });
 

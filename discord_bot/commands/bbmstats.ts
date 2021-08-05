@@ -23,7 +23,7 @@ export const run: Run = async (client, message) => {
 		const defeat = key["defeat"];
 		const md =
 			Math.round((key["meanDuration"] + Number.EPSILON) * 100) / 100;
-		info += `**${mode}**\n\`\`\`json\nVictories : ${victory}\nDefeats : ${defeat}\nAverage Duartion : ${md}\n\`\`\`\n`;
+		info += `**${mode}**\n\`\`\`json\nVictories : ${victory}\nDefeats : ${defeat}\nAverage Duration : ${md}\n\`\`\`\n`;
 	}
 
 	const statsEmbed = client.embed({
