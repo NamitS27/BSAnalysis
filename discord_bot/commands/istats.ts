@@ -5,7 +5,8 @@ export const run: Run = async (client, message) => {
 	const messageContent: string = message.content;
 	const args: string[] = messageContent.split(" ");
 	args.shift();
-	if (args.length === 0 || args.length > 1) {
+
+	if (args.length !== 1) {
 		const errorMessage = client.embed({
 			description: `Invalid number of arguments.`,
 		});
@@ -19,8 +20,15 @@ export const run: Run = async (client, message) => {
 		{ name: "Victories", value: `${stats["victory"]}`, inline: true },
 		{ name: "Defeats", value: `${stats["defeat"]}`, inline: true },
 		{
-			name: "# Star Player",
-			value: `${stats["starPlayer"]}`,
+			name: "Star Player (%)",
+			value: `${
+				Math.round(
+					((stats["starPlayer"] * 100) /
+						(stats["starPlayer"] + stats["defeat"]) +
+						Number.EPSILON) *
+						100
+				) / 100
+			} %`,
 			inline: true,
 		},
 		{
@@ -31,13 +39,15 @@ export const run: Run = async (client, message) => {
 			name: "Average Duration",
 			value: `${
 				Math.round((stats["meanDuration"] + Number.EPSILON) * 100) / 100
-			}`,
+			} s`,
 		},
 	];
 
 	const statsEmbed = client.embed({
-		title: `Individual Statistics of ${args[0].toUpperCase()}`,
-		description: description,
+		title: `Individual Statistics`,
+		description: `Gives the statistics for all types of 3v3 battles played by ${toProperCase(
+			args[0]
+		)}`,
 		fields,
 	});
 
@@ -48,3 +58,9 @@ export const name: string = "istats";
 export const aliases: string[] = ["ist"];
 export const description: string =
 	"Gives the statistics for all types of 3v3 battles for the specified player.";
+
+function toProperCase(str: string): string {
+	return str.replace(/(^|\s)\S/g, function (str) {
+		return str.toUpperCase();
+	});
+}

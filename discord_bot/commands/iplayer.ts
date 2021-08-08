@@ -6,7 +6,8 @@ export const run: Run = async (client, message) => {
 	const messageContent: string = message.content;
 	const args: string[] = messageContent.split(" ");
 	args.shift();
-	if (args.length === 0 || args.length > 1) {
+
+	if (args.length !== 1) {
 		const errorMessage = client.embed({
 			description: `Invalid number of arguments.`,
 		});
@@ -15,7 +16,22 @@ export const run: Run = async (client, message) => {
 	}
 
 	const stats = await getPlayerInfo(args[0]);
-	const title = `Information of ${stats["name"]}'s profile`;
+	if (!stats) {
+		return;
+	}
+
+	let starPoints: number = 0;
+	let trophyDrop: number = 0;
+	for (let i = 0; i < stats["brawlers"].length; i++) {
+		let brawler = stats["brawlers"][i];
+		let brawlerCurrTrophies = brawler["trophies"];
+
+		let calcResult = calc(brawlerCurrTrophies);
+		starPoints += calcResult[1];
+		trophyDrop += calcResult[0];
+	}
+
+	const title = `${stats["name"]}`;
 	const fields = [
 		{ name: "Trophies", value: stats["trophies"], inline: true },
 		{
@@ -38,37 +54,17 @@ export const run: Run = async (client, message) => {
 			value: stats["expPoints"],
 			inline: true,
 		},
+		{ name: "# Brawlers", value: stats["brawlers"].length, inline: true },
 		{
-			name: "3 vs 3 Victories",
+			name: "3v3 Wins",
 			value: stats["3vs3Victories"],
+			inline: true,
 		},
-		{ name: "Duo Victories", value: stats["duoVictories"], inline: true },
-		{ name: "Solo Victories", value: stats["soloVictories"], inline: true },
-		{ name: "# Brawlers", value: stats["brawlers"].length },
+		{ name: "Duo Wins", value: stats["duoVictories"], inline: true },
+		{ name: "Solo Wins", value: stats["soloVictories"], inline: true },
+		{ name: "Current Star Points Gain", value: starPoints, inline: true },
+		{ name: "Current Trophies Drop", value: trophyDrop, inline: true },
 	];
-
-	// let embeds: MessageEmbed[] = [];
-	// let counter: number = 0;
-	// let fieldsForBrawlers = [];
-	// for (let i = 0; i < stats["brawlers"].length; i++) {
-	// 	let brawler = stats["brawlers"][i];
-	// 	const eachField = {
-	// 		name: `${brawler["name"]} [${brawler["power"]}] (${brawler["rank"]})`,
-	// 		value: `${brawler["trophies"]} (*${brawler["highestTrophies"]}*) [${brawler["gadgets"]}-${brawler["starPowers"]}]`,
-	// 		inline: true,
-	// 	};
-	// 	fieldsForBrawlers.push(eachField);
-	// 	counter++;
-	// 	if (counter == 24 || i == stats["brawlers"].length - 1) {
-	// 		counter = 0;
-	// 		const emb = client.embed({
-	// 			title: `Brawlers of ${stats["name"]}`,
-	// 			fields: fieldsForBrawlers,
-	// 		});
-	// 		fieldsForBrawlers = [];
-	// 		embeds.push(emb);
-	// 	}
-	// }
 
 	const statsEmbed = client.embed({
 		title,
@@ -80,11 +76,51 @@ export const run: Run = async (client, message) => {
 	});
 
 	await message.channel.send({ embed: statsEmbed });
-	// for (let i = 0; i < embeds.length; i++)
-	// 	await message.channel.send({ embed: embeds[i] });
 };
 
 export const name: string = "iplayer";
 export const aliases: string[] = ["ip"];
 export const description: string =
 	"Gives the overall information about the player's so far gameplay.";
+
+function calc(brawlerTrophy: number) {
+	const powerPointMatrix: number[][] = [
+		[501, 524, 500, 20],
+		[525, 549, 524, 50],
+		[550, 574, 549, 70],
+		[575, 599, 574, 80],
+		[600, 624, 599, 90],
+		[625, 649, 624, 100],
+		[650, 674, 649, 110],
+		[675, 699, 674, 120],
+		[700, 724, 699, 130],
+		[725, 749, 724, 140],
+		[750, 774, 749, 150],
+		[775, 799, 774, 160],
+		[800, 824, 799, 170],
+		[825, 849, 824, 180],
+		[850, 874, 849, 190],
+		[875, 899, 874, 200],
+		[900, 924, 885, 210],
+		[925, 949, 900, 220],
+		[950, 974, 920, 230],
+		[975, 999, 940, 240],
+		[1000, 1049, 960, 250],
+		[1050, 1099, 980, 260],
+		[1100, 1149, 1000, 270],
+		[1150, 1199, 1020, 280],
+		[1200, 1249, 1040, 290],
+		[1250, 1299, 1060, 300],
+		[1300, 1349, 1080, 310],
+		[1350, 1399, 1100, 320],
+		[1400, 1449, 1120, 330],
+		[1450, 1499, 1140, 340],
+	];
+	for (let i = 0; i < powerPointMatrix.length; i++) {
+		let row = powerPointMatrix[i];
+		if (brawlerTrophy >= row[0] && brawlerTrophy <= row[1]) {
+			return [brawlerTrophy - row[2], row[3]];
+		}
+	}
+	return brawlerTrophy >= 1500 ? [brawlerTrophy - 1150, 350] : [0, 0];
+}

@@ -15,6 +15,7 @@ export const run: Run = async (client, message) => {
 	}
 	const query = { mode: args[0] };
 	if (args.length == 2) query["map"] = args[1];
+
 	let stats = await brawlBrosInsights(query);
 	let info: string = "";
 	let infoArray: string[] = [];
@@ -25,9 +26,9 @@ export const run: Run = async (client, message) => {
 		const defeat = key["defeat"];
 		const brawlerTeam: string[] = key["team"];
 		const map = key["map"];
-		const md =
+		const meanDuration =
 			Math.round((key["meanDuration"] + Number.EPSILON) * 100) / 100;
-		const appendInfo: string = `**${brawlerTeam[0]}, ${brawlerTeam[1]} & ${brawlerTeam[2]}**\`\`\`json\nMap: ${map}\nVictories : ${victory}\nDefeats : ${defeat}\nAverage Duration : ${md}\n\`\`\`\n`;
+		const appendInfo: string = `**${brawlerTeam[0]}, ${brawlerTeam[1]} & ${brawlerTeam[2]}**\`\`\`json\nMap: ${map}\nVictories : ${victory}\nDefeats : ${defeat}\nAverage Duration : ${meanDuration} s\n\`\`\`\n`;
 
 		if (info.length + appendInfo.length > 4096) {
 			infoArray.push(info);
@@ -39,7 +40,9 @@ export const run: Run = async (client, message) => {
 
 	for (let i = 0; i < infoArray.length; i++) {
 		const embed = client.embed({
-			title: `Statistics for ${args[0]} played by three of us!`,
+			title: `Statistics for ${unCamelCase(
+				args[0]
+			)} played by **Brawl Bros**!`,
 			description: infoArray[i],
 		});
 		await message.channel.send({ embed: embed });
@@ -49,12 +52,26 @@ export const run: Run = async (client, message) => {
 export const name: string = "bbmwstats";
 export const aliases: string[] = ["bbmwst"];
 export const description: string =
-	"Gives the statistics for all types of 3v3 battles for the specified player.";
+	"Gives the statistics for the specific mode (can also provide the name of the map for being more specific) for the **Brawl Bros**.";
 
-function split(string, separator, n) {
-	var split = string.split(separator);
-	if (split.length <= n) return split;
-	var out = split.slice(0, n - 1);
-	out.push(split.slice(n - 1).join(separator));
+function split(str: string, separator, numberOfSplits: number): string[] {
+	let split = str.split(separator);
+	if (split.length <= numberOfSplits) return split;
+	let out = split.slice(0, numberOfSplits - 1);
+	out.push(split.slice(numberOfSplits - 1).join(separator));
 	return out;
+}
+
+function unCamelCase(str: string): string {
+	return (
+		str
+			// insert a space between lower & upper
+			.replace(/([a-z])([A-Z])/g, "$1 $2")
+			// space before last upper in a sequence followed by lower
+			.replace(/\b([A-Z]+)([A-Z])([a-z])/, "$1 $2$3")
+			// uppercase the first character
+			.replace(/^./, function (str) {
+				return str.toUpperCase();
+			})
+	);
 }
