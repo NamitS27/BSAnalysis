@@ -19,13 +19,16 @@ export const run: Run = async (client, message: Message) => {
 		client.commands.get(cmd) ||
 		client.commands.get(client.aliases.get(cmd));
 	if (!command) return;
-	command.run(client, message, args).catch((reason: any) =>
-		message.channel.send(
-			client.embed({
-				description: `An error occured due to ${reason}`,
-			})
-		)
-	);
+	command.run(client, message, args).catch((reason: any) => {
+		client.logger.error(reason);
+		message.channel.send({
+			embeds: [
+				client.embed({
+					description: `An error occured due to ${reason}`,
+				}),
+			],
+		});
+	});
 };
 
 export const name: string = "message";

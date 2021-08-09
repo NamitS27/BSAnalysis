@@ -1,5 +1,6 @@
 import { Run } from "../interfaces/command";
 import { insights } from "../../utils/mapAnalysis";
+import { MessageEmbed } from "discord.js";
 
 export const run: Run = async (client, message) => {
 	const messageContent: string = message.content;
@@ -10,7 +11,7 @@ export const run: Run = async (client, message) => {
 		const errorMessage = client.embed({
 			description: `Invalid number of arguments.`,
 		});
-		await message.channel.send({ embed: errorMessage });
+		await message.channel.send({ embeds: [errorMessage] });
 		return;
 	}
 
@@ -18,8 +19,9 @@ export const run: Run = async (client, message) => {
 	if (args.length == 3) query["map"] = args[2];
 
 	const stats = await insights(query);
+
 	let info: string = "";
-	let infoArray: string[] = [];
+	let embeds: MessageEmbed[] = [];
 
 	for (let i = 0; i < stats.length; i++) {
 		const key = stats[i];
@@ -40,28 +42,33 @@ export const run: Run = async (client, message) => {
 		const appendInfo: string = `**${brawler}** @ ${map}\`\`\`json\nVictories : ${victory}\nDefeats : ${defeat}\nStar Player (%): ${starPlayerPercent}\nAverage Trophy Change : ${avgTrophyChange}\nAverage Duration : ${meanDuration}\n\`\`\`\n`;
 
 		if (info.length + appendInfo.length > 4096) {
-			infoArray.push(info);
+			const embed = client.embed({
+				title: `Individual Statistics of ${args[0].toUpperCase()} for mode ${unCamelCase(
+					args[1]
+				)}`,
+				description: info,
+			});
+			embeds.push(embed);
 			info = "";
 		}
 		info += appendInfo;
 	}
-	infoArray.push(info);
+	const embed = client.embed({
+		title: `Individual Statistics of ${args[0].toUpperCase()} for mode ${unCamelCase(
+			args[1]
+		)}`,
+		description: info,
+	});
+	embeds.push(embed);
 
-	for (let i = 0; i < infoArray.length; i++) {
-		const embed = client.embed({
-			title: `Individual Statistics of ${args[0].toUpperCase()} for mode ${unCamelCase(
-				args[1]
-			)}`,
-			description: infoArray[i],
-		});
-		await message.channel.send({ embed: embed });
-	}
+	await message.channel.send({ embeds: embeds });
 };
 
 export const name: string = "imwstats";
 export const aliases: string[] = ["imwst"];
 export const description: string =
 	"Gives the statistics for the specific mode (can also provide the name of the map for being more specific) for the specific player.";
+export const usage: string = "`imwstats <person> <mode> [map]`";
 
 function split(str: string, separator, numberOfSplits: number): string[] {
 	let split = str.split(separator);

@@ -1,5 +1,6 @@
 import { Run } from "../interfaces/command";
 import { brawlBrosInsights } from "../../utils/mapAnalysis";
+import { MessageEmbed } from "discord.js";
 
 export const run: Run = async (client, message) => {
 	const messageContent: string = message.content;
@@ -10,7 +11,7 @@ export const run: Run = async (client, message) => {
 		const errorMessage = client.embed({
 			description: `Invalid number of arguments.`,
 		});
-		await message.channel.send({ embed: errorMessage });
+		await message.channel.send({ embeds: [errorMessage] });
 		return;
 	}
 	const query = { mode: args[0] };
@@ -18,7 +19,7 @@ export const run: Run = async (client, message) => {
 
 	let stats = await brawlBrosInsights(query);
 	let info: string = "";
-	let infoArray: string[] = [];
+	let embeds: MessageEmbed[] = [];
 
 	for (let i = 0; i < stats.length; i++) {
 		const key = stats[i];
@@ -31,28 +32,33 @@ export const run: Run = async (client, message) => {
 		const appendInfo: string = `**${brawlerTeam[0]}, ${brawlerTeam[1]} & ${brawlerTeam[2]}**\`\`\`json\nMap: ${map}\nVictories : ${victory}\nDefeats : ${defeat}\nAverage Duration : ${meanDuration} s\n\`\`\`\n`;
 
 		if (info.length + appendInfo.length > 4096) {
-			infoArray.push(info);
+			const embed = client.embed({
+				title: `Statistics for ${unCamelCase(
+					args[0]
+				)} played by **Brawl Bros**!`,
+				description: info,
+			});
+			embeds.push(embed);
 			info = "";
 		}
 		info += appendInfo;
 	}
-	infoArray.push(info);
+	const embed = client.embed({
+		title: `Statistics for ${unCamelCase(
+			args[0]
+		)} played by **Brawl Bros**!`,
+		description: info,
+	});
+	embeds.push(embed);
 
-	for (let i = 0; i < infoArray.length; i++) {
-		const embed = client.embed({
-			title: `Statistics for ${unCamelCase(
-				args[0]
-			)} played by **Brawl Bros**!`,
-			description: infoArray[i],
-		});
-		await message.channel.send({ embed: embed });
-	}
+	await message.channel.send({ embeds: embeds });
 };
 
 export const name: string = "bbmwstats";
 export const aliases: string[] = ["bbmwst"];
 export const description: string =
 	"Gives the statistics for the specific mode (can also provide the name of the map for being more specific) for the **Brawl Bros**.";
+export const usage: string = "`bbmwstats <mode> [map]`";
 
 function split(str: string, separator, numberOfSplits: number): string[] {
 	let split = str.split(separator);

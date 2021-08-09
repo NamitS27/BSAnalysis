@@ -11,7 +11,7 @@ export const run: Run = async (client, message) => {
 		const errorMessage = client.embed({
 			description: `Invalid number of arguments.`,
 		});
-		await message.channel.send({ embed: errorMessage });
+		await message.channel.send({ embeds: [errorMessage] });
 		return;
 	}
 
@@ -33,37 +33,45 @@ export const run: Run = async (client, message) => {
 
 	const title = `${stats["name"]}`;
 	const fields = [
-		{ name: "Trophies", value: stats["trophies"], inline: true },
+		{ name: "Trophies", value: `${stats["trophies"]}`, inline: true },
 		{
 			name: "Highest Trophies",
-			value: stats["highestTrophies"],
+			value: `${stats["highestTrophies"]}`,
 			inline: true,
 		},
 		{
 			name: "CC Qualified",
-			value: stats["isQualifiedFromChampionshipChallenge"],
+			value: `${stats["isQualifiedFromChampionshipChallenge"]}`,
 			inline: true,
 		},
 		{
 			name: "Exp Level",
-			value: stats["expLevel"],
+			value: `${stats["expLevel"]}`,
 			inline: true,
 		},
 		{
 			name: "Exp Points",
-			value: stats["expPoints"],
+			value: `${stats["expPoints"]}`,
 			inline: true,
 		},
-		{ name: "# Brawlers", value: stats["brawlers"].length, inline: true },
+		{
+			name: "# Brawlers",
+			value: `${stats["brawlers"].length}`,
+			inline: true,
+		},
 		{
 			name: "3v3 Wins",
-			value: stats["3vs3Victories"],
+			value: `${stats["3vs3Victories"]}`,
 			inline: true,
 		},
-		{ name: "Duo Wins", value: stats["duoVictories"], inline: true },
-		{ name: "Solo Wins", value: stats["soloVictories"], inline: true },
-		{ name: "Current Star Points Gain", value: starPoints, inline: true },
-		{ name: "Current Trophies Drop", value: trophyDrop, inline: true },
+		{ name: "Duo Wins", value: `${stats["duoVictories"]}`, inline: true },
+		{ name: "Solo Wins", value: `${stats["soloVictories"]}`, inline: true },
+		{
+			name: "Current Star Points Gain",
+			value: `${starPoints}`,
+			inline: true,
+		},
+		{ name: "Current Trophies Drop", value: `${trophyDrop}`, inline: true },
 	];
 
 	const statsEmbed = client.embed({
@@ -75,13 +83,14 @@ export const run: Run = async (client, message) => {
 		},
 	});
 
-	await message.channel.send({ embed: statsEmbed });
+	await message.channel.send({ embeds: [statsEmbed] });
 };
 
 export const name: string = "iplayer";
 export const aliases: string[] = ["ip"];
 export const description: string =
 	"Gives the overall information about the player's so far gameplay.";
+export const usage: string = "`iplayer <person>`";
 
 function calc(brawlerTrophy: number) {
 	const powerPointMatrix: number[][] = [

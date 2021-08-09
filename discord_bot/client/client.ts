@@ -16,21 +16,17 @@ import { Event } from "../interfaces/event";
 const globPromise = promisify(glob);
 
 class Bot extends Client {
-	public prefix: string = "#";
+	public prefix: string = "?";
 	public logger: Consola = consola;
 	public commands: Collection<string, Command> = new Collection();
 	public aliases: Collection<string, string> = new Collection();
 	public descriptions: Collection<string, string> = new Collection();
 	public events: Collection<string, Event> = new Collection();
+	public usages: Collection<string, string> = new Collection();
 
 	public constructor() {
 		super({
-			ws: {
-				intents: Intents.ALL,
-			},
-			messageCacheLifetime: 180,
-			messageCacheMaxSize: 200,
-			messageSweepInterval: 180,
+			intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES],
 		});
 	}
 
@@ -50,6 +46,7 @@ class Bot extends Client {
 			if (file.description?.length) {
 				this.descriptions.set(file.name, file.description);
 			}
+			this.usages.set(file.name, file.usage);
 		});
 
 		const eventFiles = await globPromise(

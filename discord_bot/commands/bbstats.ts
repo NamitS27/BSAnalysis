@@ -10,7 +10,7 @@ export const run: Run = async (client, message) => {
 		const errorMessage = client.embed({
 			description: `Invalid number of arguments.`,
 		});
-		await message.channel.send({ embed: errorMessage });
+		await message.channel.send({ embeds: [errorMessage] });
 		return;
 	}
 
@@ -35,10 +35,11 @@ export const run: Run = async (client, message) => {
 		fields,
 	});
 
-	await message.channel.send({ embed: statsEmbed });
+	await message.channel.send({ embeds: [statsEmbed] });
 };
 
 export const name: string = "bbstats";
 export const aliases: string[] = ["bbst"];
 export const description: string =
 	"Gives the statistics for all types of 3v3 battles played by Namit, Devarsh & Harvish.";
+export const usage: string = "`bbstats`";

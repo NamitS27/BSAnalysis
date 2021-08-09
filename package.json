@@ -2,7 +2,7 @@
 	"name": "brawl-stars",
 	"version": "1.0.0",
 	"description": "",
-	"main": "index.js",
+	"main": "app.ts",
 	"scripts": {
 		"dev": "nodemon app.ts"
 	},
@@ -19,14 +19,14 @@
 		"@types/node-cron": "^2.0.4",
 		"@types/node-fetch": "^2.5.11",
 		"nodemon": "^2.0.12",
-		"ts-node": "^10.1.0",
+		"ts-node": "^10.2.0",
 		"tslint": "^6.1.3",
 		"typescript": "^4.3.5"
 	},
 	"dependencies": {
 		"body-parser": "^1.19.0",
 		"consola": "^2.15.3",
-		"discord.js": "^12.5.3",
+		"discord.js": "^13.0.1",
 		"dotenv": "^10.0.0",
 		"express": "^4.17.1",
 		"glob": "^7.1.7",

@@ -6,11 +6,11 @@ export const run: Run = async (client, message) => {
 	const args: string[] = messageContent.split(" ");
 	args.shift();
 
-	if (args.length != 1) {
+	if (args.length != 1 || !(args[0] in ["namit", "devarsh", "harvish"])) {
 		const errorMessage = client.embed({
-			description: `Invalid number of arguments.`,
+			description: `Invalid number of arguments or person doesn't exisit.`,
 		});
-		await message.channel.send({ embed: errorMessage });
+		await message.channel.send({ embeds: [errorMessage] });
 		return;
 	}
 
@@ -41,13 +41,14 @@ export const run: Run = async (client, message) => {
 		description: info,
 	});
 
-	await message.channel.send({ embed: statsEmbed });
+	await message.channel.send({ embeds: [statsEmbed] });
 };
 
 export const name: string = "imstats";
 export const aliases: string[] = ["imst"];
 export const description: string =
 	"Gives the modewise statistics for all types of 3v3 battles for the specificed player.";
+export const usage: string = "`imstats <person> <mode>`";
 
 function unCamelCase(str: string): string {
 	return (
