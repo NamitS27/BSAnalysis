@@ -67,11 +67,15 @@ export const run: Run = async (client, message) => {
 		{ name: "Duo Wins", value: `${stats["duoVictories"]}`, inline: true },
 		{ name: "Solo Wins", value: `${stats["soloVictories"]}`, inline: true },
 		{
-			name: "Current Star Points Gain",
+			name: "*Current Star Points Gain",
 			value: `${starPoints}`,
 			inline: true,
 		},
-		{ name: "Current Trophies Drop", value: `${trophyDrop}`, inline: true },
+		{
+			name: "*Current Trophies Drop",
+			value: `${trophyDrop}`,
+			inline: true,
+		},
 	];
 
 	const statsEmbed = client.embed({
@@ -79,7 +83,7 @@ export const run: Run = async (client, message) => {
 		description,
 		fields,
 		footer: {
-			text: `Player Tag : ${stats["tag"]}`,
+			text: `Player Tag : ${stats["tag"]}  |  *Trophy Road Season Stats`,
 		},
 	});
 
