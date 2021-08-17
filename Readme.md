@@ -30,7 +30,7 @@
 
 #### Database Used
 
--   [Mongo DB](https://www.mongodb.com/cloud/atlas) (To use MongoDB Atlast click on it)
+-   [Mongo DB](https://www.mongodb.com/cloud/atlas) (To use MongoDB Atlas click on it)
 
 <br>
 
