@@ -5,7 +5,6 @@ import { MessageEmbed } from "discord.js";
 export const run: Run = async (client, message) => {
 	const messageContent: string = message.content;
 	const args: string[] = split(messageContent, " ", 3);
-	console.log(args);
 	args.shift();
 
 	if (args.length < 1 || args.length > 2) {
