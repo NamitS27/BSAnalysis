@@ -7,8 +7,6 @@ interface teamBrawlerAnalysisModel extends Document {
 	brawlerName: string;
 	victory: number;
 	defeat: number;
-	trophyChange: number;
-	meanDuration: number;
 	starPlayer: number;
 }
 
@@ -17,7 +15,6 @@ interface teamAnalysisModel extends Document {
 	map: string;
 	victory: number;
 	defeat: number;
-	meanDuration: number;
 	team: [string];
 }
 
@@ -29,8 +26,6 @@ const teamBrawlerAnalysisSchema = new Schema(
 		brawlerName: { type: String, required: true },
 		victory: { type: Number, required: true, default: 0 },
 		defeat: { type: Number, required: true, default: 0 },
-		trophyChange: { type: Number, required: true },
-		meanDuration: { type: Number, required: true, default: 0 },
 		starPlayer: { type: Number, required: true, default: 0 },
 	},
 	{ versionKey: false }
@@ -42,7 +37,6 @@ const teamAnalysisSchema = new Schema(
 		map: { type: String, required: true },
 		victory: { type: Number, required: true, default: 0 },
 		defeat: { type: Number, required: true, default: 0 },
-		meanDuration: { type: Number, required: true, default: 0 },
 		team: { type: [String], required: true },
 	},
 	{ versionKey: false }

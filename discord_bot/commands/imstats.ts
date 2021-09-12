@@ -23,9 +23,6 @@ export const run: Run = async (client, message) => {
 		const mode = unCamelCase(key["_id"]);
 		const victory = key["victory"];
 		const defeat = key["defeat"];
-		const avgTrophyChange = Math.floor(key["trophyChange"]);
-		const meanDuration =
-			Math.round((key["meanDuration"] + Number.EPSILON) * 100) / 100;
 		const starPlayerCount = key["starPlayer"];
 		let starPlayerPercent =
 			Math.round(
@@ -33,7 +30,7 @@ export const run: Run = async (client, message) => {
 			) / 100;
 		starPlayerPercent = isNaN(starPlayerPercent) ? 0 : starPlayerPercent;
 
-		info += `**${mode}**\n\`\`\`json\nVictories : ${victory}\nDefeats : ${defeat}\nStar Player (%): ${starPlayerPercent}\nAverage Trophy Change : ${avgTrophyChange}\nAverage Duration (sec): ${meanDuration}\n\`\`\`\n`;
+		info += `**${mode}**\n\`\`\`json\nVictories : ${victory}\nDefeats : ${defeat}\nStar Player (%): ${starPlayerPercent}\n\`\`\`\n`;
 	}
 
 	const statsEmbed = client.embed({

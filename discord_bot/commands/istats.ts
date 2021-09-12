@@ -31,16 +31,6 @@ export const run: Run = async (client, message) => {
 			} %`,
 			inline: true,
 		},
-		{
-			name: "Average Trophy Change",
-			value: `${Math.floor(stats["trophyChange"])}`,
-		},
-		{
-			name: "Average Duration",
-			value: `${
-				Math.round((stats["meanDuration"] + Number.EPSILON) * 100) / 100
-			} s`,
-		},
 	];
 
 	const statsEmbed = client.embed({

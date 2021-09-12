@@ -29,9 +29,6 @@ export const run: Run = async (client, message) => {
 		const defeat = key["defeat"];
 		const brawler = key["brawlerName"];
 		const map = key["map"];
-		const avgTrophyChange = Math.floor(key["trophyChange"]);
-		const meanDuration =
-			Math.round((key["meanDuration"] + Number.EPSILON) * 100) / 100;
 		const starPlayerCount = key["starPlayer"];
 		let starPlayerPercent =
 			Math.round(
@@ -39,7 +36,7 @@ export const run: Run = async (client, message) => {
 			) / 100;
 		starPlayerPercent = isNaN(starPlayerPercent) ? 0 : starPlayerPercent;
 
-		const appendInfo: string = `**${brawler}** @ ${map}\`\`\`json\nVictories : ${victory}\nDefeats : ${defeat}\nStar Player (%): ${starPlayerPercent}\nAverage Trophy Change : ${avgTrophyChange}\nAverage Duration : ${meanDuration}\n\`\`\`\n`;
+		const appendInfo: string = `**${brawler}** @ ${map}\`\`\`json\nVictories : ${victory}\nDefeats : ${defeat}\nStar Player (%): ${starPlayerPercent}\n\`\`\`\n`;
 
 		if (info.length + appendInfo.length > 4096) {
 			const embed = client.embed({

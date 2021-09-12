@@ -4,7 +4,8 @@ import { MessageEmbed } from "discord.js";
 
 export const run: Run = async (client, message) => {
 	const messageContent: string = message.content;
-	const args: string[] = split(messageContent, " ", 2);
+	const args: string[] = split(messageContent, " ", 3);
+	console.log(args);
 	args.shift();
 
 	if (args.length < 1 || args.length > 2) {
@@ -27,9 +28,7 @@ export const run: Run = async (client, message) => {
 		const defeat = key["defeat"];
 		const brawlerTeam: string[] = key["team"];
 		const map = key["map"];
-		const meanDuration =
-			Math.round((key["meanDuration"] + Number.EPSILON) * 100) / 100;
-		const appendInfo: string = `**${brawlerTeam[0]}, ${brawlerTeam[1]} & ${brawlerTeam[2]}**\`\`\`json\nMap: ${map}\nVictories : ${victory}\nDefeats : ${defeat}\nAverage Duration : ${meanDuration} s\n\`\`\`\n`;
+		const appendInfo: string = `**${brawlerTeam[0]}, ${brawlerTeam[1]} & ${brawlerTeam[2]}**\`\`\`json\nMap: ${map}\nVictories : ${victory}\nDefeats : ${defeat}\n\`\`\`\n`;
 
 		if (info.length + appendInfo.length > 4096) {
 			const embed = client.embed({

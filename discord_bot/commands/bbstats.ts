@@ -20,13 +20,6 @@ export const run: Run = async (client, message) => {
 	const fields = [
 		{ name: "Victories", value: `${stats["victory"]}`, inline: true },
 		{ name: "Defeats", value: `${stats["defeat"]}`, inline: true },
-		{
-			name: "Average Duration",
-			value: `${
-				Math.round((stats["meanDuration"] + Number.EPSILON) * 100) / 100
-			} s`,
-			inline: true,
-		},
 	];
 
 	const statsEmbed = client.embed({

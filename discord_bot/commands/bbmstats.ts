@@ -25,9 +25,7 @@ export const run: Run = async (client, message) => {
 		const mode = unCamelCase(key["_id"]);
 		const victory = key["victory"];
 		const defeat = key["defeat"];
-		const md =
-			Math.round((key["meanDuration"] + Number.EPSILON) * 100) / 100;
-		const appendInfo: string = `**${mode}**\n\`\`\`json\nVictories : ${victory}\nDefeats : ${defeat}\nAverage Duration : ${md} s\n\`\`\`\n`;
+		const appendInfo: string = `**${mode}**\n\`\`\`json\nVictories : ${victory}\nDefeats : ${defeat}\n\`\`\`\n`;
 		if (info.length + appendInfo.length > 4096) {
 			const embed = client.embed({
 				title: `Modewise Statistics of the "Brawl Bros"`,

@@ -119,10 +119,9 @@ async function battleLogAnalysis(
 			const event = battle["event"];
 			const battleDetails = battle["battle"];
 			const eventMap = event["map"];
+			if (eventMap == null) continue;
 			const eventMode = battleDetails["mode"];
-			const trophyChange = battleDetails["trophyChange"] || 0;
 			const result = battleDetails["result"];
-			const duration = battleDetails["duration"] || 0;
 			const starPlayer = battleDetails["starPlayer"];
 
 			if (battleDetails["teams"]) {
@@ -139,9 +138,7 @@ async function battleLogAnalysis(
 						eventMap,
 						eventMode,
 						parsedTeams["brawler"],
-						duration,
 						result,
-						trophyChange,
 						starPlayerTag
 					);
 					if (parsedTeams["trio"] == "Yes" && tag == "#2LJYR2UU") {
@@ -149,7 +146,6 @@ async function battleLogAnalysis(
 							eventMap,
 							eventMode,
 							parsedTeams["finalTeam"],
-							duration,
 							result
 						);
 					}
@@ -157,7 +153,7 @@ async function battleLogAnalysis(
 			}
 		}
 	} catch (err) {
-		console.log(err.message);
+		logger.error(err.message);
 	}
 }
 
@@ -210,18 +206,16 @@ async function updateTeamAnalysis(
 	map: any,
 	mode: any,
 	team: [string],
-	duration: number,
 	result: string
 ) {
 	try {
+		if (map == null) map = "mapMaker";
 		const currTeamAnalysis = await TeamAnalysis.findOne({
 			map: map,
 			mode: mode,
 			team: team,
 		});
 		if (currTeamAnalysis) {
-			currTeamAnalysis.meanDuration =
-				(currTeamAnalysis.meanDuration + duration) / 2;
 			if (result == "defeat") {
 				currTeamAnalysis.defeat += 1;
 			} else {
@@ -229,7 +223,6 @@ async function updateTeamAnalysis(
 			}
 			await currTeamAnalysis.save();
 		} else {
-			if (map == null) map = "mapMaker";
 			let vic: number = 0,
 				def: number = 0;
 			if (result == "defeat") def++;
@@ -238,14 +231,13 @@ async function updateTeamAnalysis(
 				map: map,
 				mode: mode,
 				team: team,
-				meanDuration: duration,
 				victory: vic,
 				defeat: def,
 			});
 			await newData.save();
 		}
 	} catch (err) {
-		console.log(err.message);
+		logger.error(err.message);
 	}
 }
 
@@ -254,48 +246,44 @@ async function updateTeamBrawlerAnalysis(
 	map: any,
 	mode: any,
 	brawlerName: string,
-	duration: number,
 	result: string,
-	trophyChange: number,
 	starPlayerTag: string
 ) {
-	const currTeamBrawlerAnalysis = await TeamBrawlerAnalysis.findOne({
-		tag: tag,
-		map: map,
-		mode: mode,
-		brawlerName: brawlerName,
-	});
-
-	if (currTeamBrawlerAnalysis) {
-		currTeamBrawlerAnalysis.meanDuration =
-			(currTeamBrawlerAnalysis.meanDuration + duration) / 2;
-		if (result == "defeat") {
-			currTeamBrawlerAnalysis.defeat += 1;
-		} else {
-			currTeamBrawlerAnalysis.victory += 1;
-		}
-		currTeamBrawlerAnalysis.trophyChange =
-			(currTeamBrawlerAnalysis.trophyChange + trophyChange) / 2;
-		currTeamBrawlerAnalysis.starPlayer += starPlayerTag === tag ? 1 : 0;
-		await currTeamBrawlerAnalysis.save();
-	} else {
+	try {
 		if (map == null) map = "mapMaker";
-		let vic: number = 0,
-			def: number = 0;
-		if (result == "defeat") def++;
-		else vic++;
-		const newData = new TeamBrawlerAnalysis({
+		const currTeamBrawlerAnalysis = await TeamBrawlerAnalysis.findOne({
 			tag: tag,
 			map: map,
 			mode: mode,
 			brawlerName: brawlerName,
-			meanDuration: duration,
-			victory: vic,
-			defeat: def,
-			trophyChange: trophyChange,
-			starPlayer: starPlayerTag === tag ? 1 : 0,
 		});
-		await newData.save();
+
+		if (currTeamBrawlerAnalysis) {
+			if (result == "defeat") {
+				currTeamBrawlerAnalysis.defeat += 1;
+			} else {
+				currTeamBrawlerAnalysis.victory += 1;
+			}
+			currTeamBrawlerAnalysis.starPlayer += starPlayerTag === tag ? 1 : 0;
+			await currTeamBrawlerAnalysis.save();
+		} else {
+			let vic: number = 0,
+				def: number = 0;
+			if (result == "defeat") def++;
+			else vic++;
+			const newData = new TeamBrawlerAnalysis({
+				tag: tag,
+				map: map,
+				mode: mode,
+				brawlerName: brawlerName,
+				victory: vic,
+				defeat: def,
+				starPlayer: starPlayerTag === tag ? 1 : 0,
+			});
+			await newData.save();
+		}
+	} catch (err) {
+		logger.error(err.message);
 	}
 }
 

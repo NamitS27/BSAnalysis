@@ -15,8 +15,6 @@ export async function insights(query: any) {
 		victory: -1,
 		starPlayer: -1,
 		defeat: -1,
-		trophyChange: -1,
-		meanDuration: 1,
 	});
 
 	return insights;
@@ -41,8 +39,6 @@ export async function individualStats(person: string) {
 							_id: "$mode",
 							victory: { $sum: "$victory" },
 							defeat: { $sum: "$defeat" },
-							trophyChange: { $sum: "$trophyChange" },
-							meanDuration: { $avg: "$meanDuration" },
 							starPlayer: { $sum: "$starPlayer" },
 						},
 					},
@@ -56,8 +52,6 @@ export async function individualStats(person: string) {
 							_id: "$tag",
 							victory: { $sum: "$victory" },
 							defeat: { $sum: "$defeat" },
-							trophyChange: { $sum: "$trophyChange" },
-							meanDuration: { $avg: "$meanDuration" },
 							starPlayer: { $sum: "$starPlayer" },
 						},
 					},
@@ -89,7 +83,6 @@ export async function brawlBrosStats() {
 							_id: "$mode",
 							victory: { $sum: "$victory" },
 							defeat: { $sum: "$defeat" },
-							meanDuration: { $avg: "$meanDuration" },
 						},
 					},
 				],
@@ -99,7 +92,6 @@ export async function brawlBrosStats() {
 							_id: null,
 							victory: { $sum: "$victory" },
 							defeat: { $sum: "$defeat" },
-							meanDuration: { $avg: "$meanDuration" },
 						},
 					},
 				],
